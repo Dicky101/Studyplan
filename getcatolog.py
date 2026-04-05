@@ -7,18 +7,21 @@ import requests
 import re
 from bs4 import BeautifulSoup
 
-def get_subject_codes() -> list[str]:
-    response = requests.get("https://prog-crs.hkust.edu.hk/ugcourse", timeout=30)
+def get_info_from_website(url, *filters) -> list[str]:
+    response = requests.get(url, timeout=30)
     response.raise_for_status()
-
     soup = BeautifulSoup(response.text, "html.parser")
     text = soup.get_text(separator="\n", strip=True)
 
     codes = []
     for line in text.splitlines():
         line = line.strip()
-        if re.fullmatch(r'[A-Z]{4}', line):
-            codes.append(line)
+
+        # Check if line matches ANY of the filters
+        for pattern in filters:
+            if re.fullmatch(pattern, line):
+                codes.append(line)
+                break  # Stop checking other filters once matched
 
     return sorted(set(codes))
 
@@ -38,6 +41,3 @@ def extract_math_courses_from_pdf_url(pdf_url: str) -> list[str]:
     return sorted(set(course_codes))  # unique, sorted
 
 # Example
-# url = "https://ugadmin.hkust.edu.hk/prog_crs/ug/202526/pdf/25-26math.pdf"
-# courses = extract_math_courses_from_pdf_url(url)
-# print("MATH courses:", courses)
