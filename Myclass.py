@@ -1,8 +1,6 @@
 class Myclass:
-    def __init__(self, sem, year,course):
-        self.sem = sem
-        self.year = year
-        self.course = course
-
+    def __init__(self, class_in_one_sem):
+        self.sem = class_in_one_sem
+        
     def display(self):
-        print(f"Semester: {self.sem}, Year: {self.year}, Course: {self.course}")
+        print(f"Semester: {self.sem}")
